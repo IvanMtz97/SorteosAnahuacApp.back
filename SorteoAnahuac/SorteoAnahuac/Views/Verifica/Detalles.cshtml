@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = String.Format("Boleto {0}", ViewBag.Boleto.folio);
+    Layout = "~/Views/Shared/_LayoutBoleto.cshtml";
+}
+<div id="contenido-correo">
+    <p>
+        <div id="boleto-logo"><img src="@Url.Content("~/Content/Imagenes/AHC_Logo-Correo.png")" /></div>
+    </p>
+    <h2 class="talonario-boletos-header con-flecha-llamada">Boleto <span class="boletos-conteo">@ViewBag.Boleto.folio</span></h2>
+    <h3>¡Felicidades!</h3>
+    <p class="boleto-descripcion">Has comprado el <b>boleto @ViewBag.Boleto.folio</b> del Sorteo Anáhuac.<br />A continuación te presentamos los datos de tu compra:</p>
+    <div id="boleto-detalle-contenido">
+        <p class="boleto-contacto">
+            Dueño<br />
+            <span>@ViewBag.Boleto.comprador.nombre_completo</span>
+        </p>
+        <p class="boleto-contacto">
+            Domicilio:<br />
+            <span>@ViewBag.Boleto.comprador.direccion.calle</span> <span>@ViewBag.Boleto.comprador.direccion.numero</span><br />
+            <span>@ViewBag.Boleto.comprador.direccion.municipio</span>, <span>@ViewBag.Boleto.comprador.direccion.estado</span>
+        </p>
+        <p class="boleto-contacto">
+            Teléfono fijo:<br />
+            <span>@ViewBag.Boleto.comprador.direccion.telefono</span>
+        </p>
+        <p class="boleto-contacto">
+            Teléfono móvil:<br />
+            <span>@ViewBag.Boleto.comprador.celular</span>
+        </p>
+        <p class="boleto-contacto">
+            Correo electrónico:<br />
+            <span>@ViewBag.Boleto.comprador.correo</span>
+        </p>
+        <p class="boleto-contacto">
+            Cuenta bancaria:<br />
+            <span>@ViewBag.CuentaBancaria</span>
+        </p>
+        <p class="boleto-contacto">
+            Referencia bancaria:<br />
+            <span>@ViewBag.ReferenciaBancaria</span>
+        </p>
+        <p>
+            <div id="qrURL-boleto"><img src="data:image/jpeg;base64,@ViewBag.QrCode" /></div>
+        </p>
+        <p>
+            <div id="frente-boleto"><img src="data:image/jpeg;base64,@ViewBag.BoletoFrente" /></div>
+            <div id="reverso-boleto"><img src="@Url.Content("~/Content/Imagenes/Boleto_final_Sorteo.png")" /></div>
+        </p>
+        <p class="boleto-contacto">
+            Para más información, puedes revisar nuestro sitio web en<br /><a href="http://www.sorteoanahuac.mx/" target="_blank">http://www.sorteoanahuac.mx/</a>.
+        </p>
+    </div>
+</div>
+

@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Boleto Inválido";
+    Layout = "~/Views/Shared/_LayoutBoleto.cshtml";
+}
+
+<div id="contenido-correo">
+    <p>
+        <div id="boleto-logo"><img src="@Url.Content("~/Content/Imagenes/AHC_Logo-Correo.png")" /></div>
+    </p>
+    <h2 class="talonario-boletos-header con-flecha-llamada">Boleto <span class="boletos-conteo">Inválido</span></h2>
+    <h3>Lo sentimos</h3>
+    <p class="boleto-descripcion">El boleto que estas intentado revisar no existe o es inválido.</p>
+    <div id="boleto-detalle-contenido">
+        <p class="boleto-contacto">
+            Para más información, puedes revisar nuestro sitio web en<br /><a href="http://www.sorteoanahuac.mx/" target="_blank">http://www.sorteoanahuac.mx/</a>.
+        </p>
+    </div>
+</div>
+

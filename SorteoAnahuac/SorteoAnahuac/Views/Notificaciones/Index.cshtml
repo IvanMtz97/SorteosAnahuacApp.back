@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Notificaciones";
+}
+
+<h2>Notificaciones</h2>
+
+<p>Aquí puedes enviar notificaciones másivas a todos los usuarios del App de Colaboradores del Sorteo Anáhuac.</p>
+
+<p>Es autenticado: @(User.Identity.IsAuthenticated ? "si": "no")</p>
+
+<form action="@Url.Action("Notificar")" method="post">
+    <div class="form-group">
+        <label for="contenido">Mensaje</label>
+        <input type="text" class="form-control" id="contenido" name="contenido" placeholder="Ingresa el mensaje..." maxlength="200">
+    </div>
+    <button type="submit" class="btn btn-default">Enviar</button>
+    @{
+        object resultado = TempData["resultado"];
+        if (resultado != null && !string.IsNullOrEmpty(resultado.ToString()))
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @resultado.ToString()
+            </div>
+        }
+    }
+</form>
+

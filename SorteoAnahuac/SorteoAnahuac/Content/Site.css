@@ -1,0 +1,75 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar.navbar-inverse.navbar-fixed-top {
+	background-color: #ea7200;
+	color: #fff;
+	border-color: #ea7200;
+}
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav > li > a {
+    color: #f0f0f0;
+}
+
+
+#boleto-logo img {
+    width: 120px;
+}
+
+#contenido-correo {
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    text-align: center;
+}
+
+    #contenido-correo h3 {
+        color: #ea7200;
+        font-style: italic;
+        font-size: 1.1em;
+    }
+
+    #contenido-correo p.boleto-descripcion {
+        color: #666;
+    }
+
+.boletos-conteo {
+    color: #ea7200;
+}
+
+#boleto-detalle-contenido {
+    margin-top: 1em;
+    text-align: center;
+}
+
+.boleto-contacto, .boleto-url {
+    color: #666;
+    font-size: 0.8em;
+}
+
+    .boleto-contacto span {
+        color: #000;
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+#qrURL-boleto, #reverso-boleto {
+    margin-bottom: 1.2em;
+}
+
+    #frente-boleto img, #reverso-boleto img {
+        width: 75%;
+    }

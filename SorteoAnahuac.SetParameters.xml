@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="SorteoAnahuac" />
+  <setParameter name="Sorteo2016Entities-Web.config Connection String" value="metadata=res://*/Models.SorteosModel.csdl|res://*/Models.SorteosModel.ssdl|res://*/Models.SorteosModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=40.84.224.118;initial catalog=sorteo2016;persist security info=True;user id=sorteo;password=$orte02016;MultipleActiveResultSets=True;App=EntityFramework&quot;" />
+</parameters>
