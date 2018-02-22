@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -217,27 +218,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BOLETO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\BOLETOS_INCIDENCIAS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\BOLETO_TAB.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COLABORADORE.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COLABORADORES_BITACORA_ACCESO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COLABORADORES_CORREOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COMPRADORE.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Entidades\Boleto.cs" />
     <Compile Include="Models\Entidades\BoletoVenta.cs" />
     <Compile Include="Models\Entidades\PushNotification.cs" />
@@ -250,111 +230,12 @@
     <Compile Include="Models\Entidades\Municipio.cs" />
     <Compile Include="Models\Entidades\Sorteo.cs" />
     <Compile Include="Models\Entidades\Talonario.cs" />
-    <Compile Include="Models\ESTADO_CUENTA.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\GANADORE.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NICHO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PERMISO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PREMIO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ROLE.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ROLES_USUARIO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SECTORE.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SEPOMEX.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Servicios\NotificacionesService.cs" />
     <Compile Include="Models\Servicios\UsuarioService.cs" />
     <Compile Include="Models\Servicios\ColaboradorService.cs" />
     <Compile Include="Models\Servicios\SessionService.cs" />
     <Compile Include="Models\Servicios\SorteoService.cs" />
     <Compile Include="Models\Servicios\TalonarioService.cs" />
-    <Compile Include="Models\SORTEO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SorteosModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SorteosModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SorteosModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SorteosModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SorteosModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_ASIGNACION_COLABORADORES.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_ASIGNACION_NICHOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_ASIGNACION_SECTORES.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_BOLETOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_COLABORADORES_BOLETOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_COLABORADORES_TALONARIOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_NICHOS_BOLETOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_NICHOS_TALONARIOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_SECTORES_BOLETOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_SECTORES_TALONARIOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_TALONARIOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_USUARIOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_USUARIOS_NICHOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SORTEOS_USUARIOS_SECTORES.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TALONARIO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\USUARIO.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\USUARIOS_CORREOS.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\vPermiso.cs">
-      <DependentUpon>SorteosModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -369,16 +250,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Models\SorteosModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SorteosModel.Context.cs</LastGenOutput>
-      <DependentUpon>SorteosModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\SorteosModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SorteosModel.edmx</DependentUpon>
-      <LastGenOutput>SorteosModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Areas\HelpPage\Views\Web.config" />
     <Content Include="Areas\HelpPage\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
@@ -398,13 +269,6 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <EntityDeploy Include="Models\SorteosModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SorteosModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\SorteosModel.edmx.diagram">
-      <DependentUpon>SorteosModel.edmx</DependentUpon>
-    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
