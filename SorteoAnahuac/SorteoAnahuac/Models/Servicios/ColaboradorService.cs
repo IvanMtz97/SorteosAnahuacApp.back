@@ -27,16 +27,18 @@ namespace SorteoAnahuac.Models
                 /* Buscamos al colaborador para revisar que este registrado como un becario en el sorteo activo actual */
                 /* Para saber que es becario, se busca que este registrado en un nicho con clave "0001" */
                 ResultSet dbPersona = db.getTable(String.Format(@"
-SELECT TOP 1 colab.PK1
-FROM COLABORADORES as colab INNER JOIN COLABORADORES_CORREOS as CORREOS
-ON colab.PK1 = correos.PK_COLABORADOR
-INNER JOIN SORTEOS sorteo
-ON colab.PK_SORTEO = sorteo.pk1
-WHERE sorteo.ACTIVO = 1
-AND correos.correo = '{0}'", correo));
-                
+SELECT top 1 CA.PK1 
+FROM COLABORADORES_ASIGNACION CA, 
+SECTORES SE, 
+SORTEOS S 
+WHERE CA.PK_SECTOR=SE.PK1 
+AND SE.PK_SORTEO=S.PK1 
+AND S.ACTIVO = 1
+AND CA.PK_COLABORADOR=(SELECT TOP 1 PK1 FROM COLABORADORES WHERE CORREO_P= '{0}')", correo));
+
                 /* Buscamos a la persona */
-                if (dbPersona.Next()) { 
+                if (dbPersona.Next())
+                {
 
                     clave = dbPersona.GetLong("PK1");
 
@@ -71,11 +73,11 @@ GETDATE())", clave, ip_address));
                         });
                     }
                 }
-                
+
                 db.Close();
             }
-            
-            
+
+
 
             return (clave > -1);
 
@@ -95,14 +97,15 @@ GETDATE())", clave, ip_address));
 
             /* Buscamos al colaborador para revisar que este registrado como un colaborador en el sorteo activo actual */
             ResultSet dbPersona = db.getTable(String.Format(@"
-SELECT TOP 1 colab.PK1, colab.CLAVE, colab.NOMBRE, colab.APATERNO, colab.AMATERNO, correos.CORREO, colab.REFBANCARIA, colab.PK_SORTEO
-FROM COLABORADORES as colab INNER JOIN COLABORADORES_CORREOS as correos
-ON colab.PK1 = correos.PK_COLABORADOR
-INNER JOIN SORTEOS sorteo
-ON colab.PK_SORTEO = sorteo.pk1
-WHERE correos.CORREO = '{0}'
-AND correos.CORREO LIKE '%@anahuac.mx'
-AND sorteo.ACTIVO = 1", correo));
+SELECT top 1 CA.PK1, C.CLAVE, C.NOMBRE, C.APATERNO, C.AMATERNO, C.CORREO_P, S.CUENTA, SE.PK_SORTEO
+FROM COLABORADORES_ASIGNACION CA, 
+SECTORES SE, 
+SORTEOS S,
+COLABORADORES C
+WHERE CA.PK_SECTOR=SE.PK1 
+AND SE.PK_SORTEO=S.PK1 
+AND S.ACTIVO = 1
+AND CA.PK_COLABORADOR=(SELECT TOP 1 PK1 FROM COLABORADORES C WHERE C.CORREO_P='{0}' AND C.CORREO_P LIKE '%@anahuac.mx')", correo));
 
             long sorteo_colab = -1;
 
@@ -116,8 +119,9 @@ AND sorteo.ACTIVO = 1", correo));
                     nombre = dbPersona.Get("NOMBRE"),
                     apellido_paterno = dbPersona.Get("APATERNO"),
                     apellido_materno = dbPersona.Get("AMATERNO"),
-                    correo = dbPersona.Get("CORREO").ToLower(),
-                    referencia_bancaria = dbPersona.Get("REFBANCARIA")
+                    correo = dbPersona.Get("CORREO_P").ToLower(),
+                    referencia_bancaria = dbPersona.Get("CUENTA")
+                    //referencia_bancaria = dbPersona.Get("REFBANCARIA")
                 };
                 sorteo_colab = dbPersona.GetLong("PK_SORTEO");
             }
@@ -159,14 +163,15 @@ AND edo.PK_SORTEO = {1}", persona.clave, sorteo_colab));
 
             /* Buscamos al colaborador para revisar que este registrado como un colaborador en el sorteo activo actual */
             ResultSet dbPersona = db.getTable(String.Format(@"
-SELECT TOP 1 colab.PK1, colab.CLAVE, colab.NOMBRE, colab.APATERNO, colab.AMATERNO, colab.REFBANCARIA, colab.PK_SORTEO
-FROM COLABORADORES as colab INNER JOIN COLABORADORES_CORREOS as correos
-ON colab.PK1 = correos.PK_COLABORADOR
-INNER JOIN SORTEOS sorteo
-ON colab.PK_SORTEO = sorteo.pk1
-WHERE correos.CORREO = '{0}'
-AND correos.CORREO LIKE '%@anahuac.mx'
-AND sorteo.ACTIVO = 1", correo));
+SELECT top 1 CA.PK1, C.CLAVE, C.NOMBRE, C.APATERNO, C.AMATERNO, S.CUENTA, SE.PK_SORTEO
+FROM COLABORADORES_ASIGNACION CA, 
+SECTORES SE, 
+SORTEOS S,
+COLABORADORES C
+WHERE CA.PK_SECTOR=SE.PK1 
+AND SE.PK_SORTEO=S.PK1 
+AND S.ACTIVO = 1
+AND CA.PK_COLABORADOR=(SELECT TOP 1 PK1 FROM COLABORADORES C WHERE C.CORREO_P='{0}' AND C.CORREO_P LIKE '%@anahuac.mx')", correo));
 
             long sorteo_colab = -1;
             bool existePersona = false;
@@ -189,7 +194,8 @@ AND sorteo.ACTIVO = 1", correo));
                     apellido_paterno = apellido_paterno,
                     apellido_materno = apellido_materno,
                     correo = correo.ToLower(),
-                    referencia_bancaria = dbPersona.Get("REFBANCARIA")
+                    referencia_bancaria = dbPersona.Get("CUENTA")
+                    //referencia_bancaria = dbPersona.Get("REFBANCARIA")
                 };
                 sorteo_colab = dbPersona.GetLong("PK_SORTEO");
                 existePersona = true;
@@ -217,20 +223,22 @@ AND edo.PK_SORTEO = {1}", persona.clave, sorteo_colab));
 
                 /* Traemos los folios de los talonarios digitales asignados a un colaborador en el sorteo activo */
                 ResultSet dbTalonarios = db.getTable(String.Format(@"
-SELECT tal.FOLIO, tal.PK1
-FROM TALONARIOS tal
-INNER JOIN SORTEOS_COLABORADORES_TALONARIOS ctal
-ON tal.PK1 = ctal.PK_TALONARIO
-WHERE tal.DIGITAL = 1
-AND tal.ASIGNADO = 1
-AND ctal.PK_SORTEO = {1}
-AND ctal.PK_COLABORADOR = {0}
-ORDER BY tal.FOLIO", persona.clave, sorteo_colab));
+select distinct t.PK1, t.FOLIO
+from COLABORADORES c
+inner join COLABORADORES_BOLETOS cb ON c.pk1 = cb.PK_COLABORADOR
+inner join BOLETOS b ON b.PK1 = cb.PK_BOLETO
+inner join TALONARIOS t ON b.PK_TALONARIO = t.PK1
+where t.DIGITAL = 1
+and t.ASIGNADO = 1
+and c.PK1 = {0}
+and t.PK_SORTEO = {1}
+ORDER BY t.FOLIO", persona.clave, sorteo_colab));
 
                 /* Por cada talonario, agregamos el folio a la lista*/
                 while (dbTalonarios.Next())
                 {
-                    talonarios.Add(new Talonario() {
+                    talonarios.Add(new Talonario()
+                    {
                         clave = dbTalonarios.GetLong("PK1"),
                         folio = dbTalonarios.Get("FOLIO")
                     });
@@ -245,35 +253,49 @@ ORDER BY tal.FOLIO", persona.clave, sorteo_colab));
                     /* Traemos los datos del talonario */
                     ResultSet dbBoleto = db.getTable(String.Format(@"
 SELECT
-	boletos.PK1,
+    boletos.PK1,
 	boletos.FOLIO,
-	boletos.FOLIODIGITAL
-FROM SORTEOS_COLABORADORES_BOLETOS rel_boletos
+	boletos.FOLIODIGITAL,
+    boletos.PK_ESTADO
+FROM COLABORADORES_BOLETOS rel_boletos
 INNER JOIN boletos
 ON boletos.PK1 = rel_boletos.PK_BOLETO
-WHERE rel_boletos.PK_SORTEO = {2}
+inner join TALONARIOS t
+ON boletos.PK_TALONARIO = t.PK1
+inner join SORTEOS s
+ON s.PK1 = t.PK_SORTEO
+WHERE t.PK_SORTEO = {2}
 AND rel_boletos.PK_COLABORADOR = {0}
-AND rel_boletos.PK_TALONARIO = {1}", persona.clave, talonario.clave, sorteo_colab));
+AND boletos.PK_TALONARIO = {1}", persona.clave, talonario.clave, sorteo_colab));
 
+                    List<Boleto> pendientes = new List<Boleto>(20);
+                    List<Boleto> vendidos = new List<Boleto>(20);
+                    List<Boleto> asignados = new List<Boleto>(20);
 
-                    List<Boleto> boletos = new List<Boleto>(20);
                     while (dbBoleto.Next())
                     {
                         Boleto boleto = new Boleto(false)
                         {
                             clave = dbBoleto.GetLong("PK1"),
                             folio = dbBoleto.Get("FOLIO"),
-                            folio_digital = dbBoleto.Get("FOLIODIGITAL")
+                            folio_digital = dbBoleto.Get("FOLIODIGITAL"),
+                            estado_boleto = dbBoleto.Get("PK_ESTADO")
                         };
                         if (boleto.folio_digital == "0")
                         {
                             boleto.folio_digital = null;
                         }
                         boleto.vendido = !String.IsNullOrEmpty(boleto.folio_digital);
-                        boletos.Add(boleto);
+                        if (boleto.estado_boleto == "V") vendidos.Add(boleto);
+                        if (boleto.estado_boleto == "P") asignados.Add(boleto);
+                        if (boleto.estado_boleto == "NULL" || boleto.estado_boleto == String.Empty) pendientes.Add(boleto);
                     }
+                    //talonario.boletos = pendientes.ToArray();
 
-                    talonario.boletos = boletos.ToArray();
+                    talonario.Boletos.Add("pendientes", pendientes.ToArray());
+                    talonario.Boletos.Add("vendidos", vendidos.ToArray());
+                    talonario.Boletos.Add("asignados", asignados.ToArray());
+                    
                 };
 
                 #endregion

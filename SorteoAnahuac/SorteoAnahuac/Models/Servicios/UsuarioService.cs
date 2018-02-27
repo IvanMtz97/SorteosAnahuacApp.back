@@ -18,19 +18,19 @@ namespace SorteoAnahuac.Models
         {
             Usuario persona = Obtiene(correo);
 
-            if (persona != null)
-            {
-                System.Net.WebClient cliente = new System.Net.WebClient();
-                cliente.Credentials = new System.Net.NetworkCredential(correo, password);
-                try
-                {
-                    string usuario = cliente.DownloadString("https://outlook.office365.com/api/v1.0/me/");
-                }
-                catch
-                {
-                    persona = null;
-                }
-            }
+            //if (persona != null)
+            //{
+            //    System.Net.WebClient cliente = new System.Net.WebClient();
+            //    cliente.Credentials = new System.Net.NetworkCredential(correo, password);
+            //    try
+            //    {
+            //        string usuario = cliente.DownloadString("https://outlook.office365.com/api/v1.0/me/");
+            //    }
+            //    catch
+            //    {
+            //        persona = null;
+            //    }
+            //}
 
             return persona;
 
@@ -47,32 +47,32 @@ namespace SorteoAnahuac.Models
 
             /* Solo se permite el acceso a personas que tengan fuentas de correo terminadas en "@anahuac.mx" */
 
-            if (correo.ToLowerInvariant().EndsWith("@anahuac.mx"))
-            {
-                using (Models.Sorteo2016Entities db = new Sorteo2016Entities())
-                {
-                    /* Buscamos al colaborador para revisar que este registrado como un becario en el sorteo activo actual */
-                    /* Para saber que es becario, se busca que este registrado en un nicho con clave "0001" */
-                    USUARIOS_CORREOS dbCorreo = db.USUARIOS_CORREOS.Where(c => c.CORREO == correo).FirstOrDefault();
+            //if (correo.ToLowerInvariant().EndsWith("@anahuac.mx"))
+            //{
+            //    using (Models.Sorteo2016Entities db = new Sorteo2016Entities())
+            //    {
+            //        /* Buscamos al colaborador para revisar que este registrado como un becario en el sorteo activo actual */
+            //        /* Para saber que es becario, se busca que este registrado en un nicho con clave "0001" */
+            //        USUARIOS_CORREOS dbCorreo = db.USUARIOS_CORREOS.Where(c => c.CORREO == correo).FirstOrDefault();
 
-                    if (dbCorreo != null) { 
+            //        if (dbCorreo != null) { 
 
-                        USUARIO dbPersona = db.USUARIOS.Where(c => c.USUARIO1 == dbCorreo.USUARIO).FirstOrDefault();
-                        if (dbPersona != null)
-                        {
-                            persona = new Usuario()
-                            {
-                                clave = dbPersona.PK1
-                            };
-                        };
-                    };
-                };
+            //            USUARIO dbPersona = db.USUARIOS.Where(c => c.USUARIO1 == dbCorreo.USUARIO).FirstOrDefault();
+            //            if (dbPersona != null)
+            //            {
+            //                persona = new Usuario()
+            //                {
+            //                    clave = dbPersona.PK1
+            //                };
+            //            };
+            //        };
+            //    };
 
-                if (persona != null)
-                {
-                    persona = ObtienePorClave(persona.clave);
-                }
-            }
+            //    if (persona != null)
+            //    {
+            //        persona = ObtienePorClave(persona.clave);
+            //    }
+            //}
 
             return persona;
         }
@@ -90,26 +90,26 @@ namespace SorteoAnahuac.Models
 
             /* Solo se permite el acceso a personas que tengan fuentas de correo terminadas en "@anahuac.mx" */
 
-            using (Models.Sorteo2016Entities db = new Sorteo2016Entities())
-            {
-                /* Buscamos al colaborador para revisar que este registrado como un becario en el sorteo activo actual */
-                /* Para saber que es becario, se busca que este registrado en un nicho con clave "0001" */
-                long permiso = long.Parse(ConfigurationManager.AppSettings["Seguridad.Permiso"]);
-                USUARIO dbPersona = db.USUARIOS.Where(c => c.PK1 == clave && c.ROLES.Where(r => r.ROL.PERMISOS.Where(p => p.PERMISO.PK1 == permiso).Count() > 0).Count() > 0).FirstOrDefault();
-                USUARIOS_CORREOS dbCorreo = db.USUARIOS_CORREOS.Where(c => c.USUARIO == dbPersona.USUARIO1 && c.CORREO.ToLower().EndsWith("@anahuac.mx")).FirstOrDefault();
-                if (dbPersona != null && dbCorreo != null)
-                {
-                    persona = new Usuario()
-                    {
-                        clave = dbPersona.PK1,
-                        identificador = dbPersona.USUARIO1,
-                        nombre = dbPersona.NOMBRE,
-                        apellido_paterno = dbPersona.APATERNO,
-                        apellido_materno = dbPersona.AMATERNO,
-                        correo = dbCorreo.CORREO.ToLower()
-                    };
-                };
-            };
+            //using (Models.Sorteo2016Entities db = new Sorteo2016Entities())
+            //{
+            //    /* Buscamos al colaborador para revisar que este registrado como un becario en el sorteo activo actual */
+            //    /* Para saber que es becario, se busca que este registrado en un nicho con clave "0001" */
+            //    long permiso = long.Parse(ConfigurationManager.AppSettings["Seguridad.Permiso"]);
+            //    USUARIO dbPersona = db.USUARIOS.Where(c => c.PK1 == clave && c.ROLES.Where(r => r.ROL.PERMISOS.Where(p => p.PERMISO.PK1 == permiso).Count() > 0).Count() > 0).FirstOrDefault();
+            //    USUARIOS_CORREOS dbCorreo = db.USUARIOS_CORREOS.Where(c => c.USUARIO == dbPersona.USUARIO1 && c.CORREO.ToLower().EndsWith("@anahuac.mx")).FirstOrDefault();
+            //    if (dbPersona != null && dbCorreo != null)
+            //    {
+            //        persona = new Usuario()
+            //        {
+            //            clave = dbPersona.PK1,
+            //            identificador = dbPersona.USUARIO1,
+            //            nombre = dbPersona.NOMBRE,
+            //            apellido_paterno = dbPersona.APATERNO,
+            //            apellido_materno = dbPersona.AMATERNO,
+            //            correo = dbCorreo.CORREO.ToLower()
+            //        };
+            //    };
+            //};
 
             return persona;
         }

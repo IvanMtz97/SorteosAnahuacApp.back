@@ -24,5 +24,10 @@ namespace SorteoAnahuac.Models
         /// Listado de boletos asignados al talonario ditital
         /// </summary>
         public Boleto[] boletos { get; set; }
+
+        /// <summary>
+        /// Diccionario de boletos al talonario ditital
+        /// </summary>
+        public Dictionary<string, Array> Boletos = new Dictionary<string, Array>();
     }
 }

@@ -280,6 +280,8 @@
     <None Include="Properties\PublishProfiles\AnahuacDEVL.pubxml" />
     <None Include="Properties\PublishProfiles\EctoVPS.pubxml" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <None Include="Properties\PublishProfiles\sorteoanahuac-servicios-mobile-p - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\sorteoanahuac-servicios-mobile-p - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

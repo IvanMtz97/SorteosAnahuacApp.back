@@ -62,6 +62,11 @@ namespace SorteoAnahuac.Models
         public string folio_talonario { get; set; }
 
         /// <summary>
+        /// Estado del Boleto
+        /// </summary>
+        public string estado_boleto { get; set; }
+
+        /// <summary>
         /// Clave del sorteo a la que pertenece el boleto
         /// </summary>
         public long? clave_sorteo;
