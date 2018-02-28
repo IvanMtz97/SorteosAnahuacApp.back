@@ -44,7 +44,12 @@ namespace SorteoAnahuac.Models
             try
             {
                 string jsonSesion = new Code.TokenUtil().Desencripta(token);
-                objSesion = Jil.JSON.Deserialize<Colaborador>(jsonSesion);
+                dynamic tempObject = Jil.JSON.DeserializeDynamic(jsonSesion);
+                objSesion = new Colaborador()
+                {
+                    expira = tempObject.expira,
+                    correo = tempObject.correo
+                };
             }
             catch
             {

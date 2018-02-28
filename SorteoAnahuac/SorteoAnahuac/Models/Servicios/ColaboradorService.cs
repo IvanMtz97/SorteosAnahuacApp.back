@@ -132,8 +132,7 @@ AND CA.PK_COLABORADOR=(SELECT TOP 1 PK1 FROM COLABORADORES C WHERE C.CORREO_P='{
                 ResultSet dbEdoCuenta = db.getTable(String.Format(@"
 SELECT TOP 1 IMPORTE, ABONO, SALDO
 FROM vESTADO_CUENTA_COLABORADOR edo
-WHERE edo.PK_COLABORADOR = {0}
-AND edo.PK_SORTEO = {1}", persona.clave, sorteo_colab));
+WHERE edo.PK_COLABORADOR = {0}", persona.clave));
 
                 /* Si encontramos datos, entonces extraemos la información del estado de cuenta */
                 if (dbEdoCuenta.Next())
@@ -207,8 +206,7 @@ AND CA.PK_COLABORADOR=(SELECT TOP 1 PK1 FROM COLABORADORES C WHERE C.CORREO_P='{
                 ResultSet dbEdoCuenta = db.getTable(String.Format(@"
 SELECT TOP 1 IMPORTE, ABONO, SALDO
 FROM vESTADO_CUENTA_COLABORADOR edo
-WHERE edo.PK_COLABORADOR = {0}
-AND edo.PK_SORTEO = {1}", persona.clave, sorteo_colab));
+WHERE edo.PK_COLABORADOR = {0}", persona.clave));
 
                 /* Si encontramos datos, entonces extraemos la información del estado de cuenta */
                 if (dbEdoCuenta.Next())
@@ -352,8 +350,7 @@ AND correos.CORREO LIKE '%@anahuac.mx'", clave));
                 ResultSet dbEdoCuenta = db.getTable(String.Format(@"
 SELECT TOP 1 IMPORTE, ABONO, SALDO
 FROM vESTADO_CUENTA_COLABORADOR edo
-WHERE edo.PK_COLABORADOR = {0}
-AND edo.PK_SORTEO = {1}", clave, sorteo_colab));
+WHERE edo.PK_COLABORADOR = {0}", clave));
 
                 /* Si encontramos datos, entonces extraemos la información del estado de cuenta */
                 if (dbEdoCuenta.Next())

@@ -100,10 +100,12 @@ ORDER BY PREMIOS.CLASIFICACION, PREMIOS.NUM_PREMIO", clave));
 
             /* Buscamos el sorteo */
             ResultSet dbSorteo = db.getTable(String.Format(@"
-SELECT TOP 1 sorteo.PK1, sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA_DEPOSITO, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
+SELECT TOP 1 sorteo.PK1, sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
 FROM SORTEOS sorteo
+LEFT JOIN SECTORES sc
+ON sc.PK_SORTEO = sorteo.PK1
 LEFT JOIN NICHOS n
-ON n.PK_SORTEO = sorteo.PK1
+ON n.PK_SECTOR = sc.PK1
 WHERE sorteo.ACTIVO = 1
 ORDER BY n.LIMITE_VENTA DESC"));//db.SORTEOS.Where(s => s.PK1 == clave).FirstOrDefault();
             /* En caso de existir ese sorteo, procedemos a traer sus datos */
@@ -116,7 +118,7 @@ ORDER BY n.LIMITE_VENTA DESC"));//db.SORTEOS.Where(s => s.PK1 == clave).FirstOrD
                     identificador = dbSorteo.Get("CLAVE"),
                     nombre = dbSorteo.Get("SORTEO"),
                     descripcion = dbSorteo.Get("DESCRIPCION"),
-                    cuenta_bancaria = dbSorteo.Get("CUENTA_DEPOSITO"),
+                    cuenta_bancaria = dbSorteo.Get("CUENTA"),
                     fecha_inico = dbSorteo.GetDateTime("FECHA_I"),
                     fecha_fin = dbSorteo.GetDateTime("FECHA_T"),
                     url_conoce = dbSorteo.Get("URL_1"),
@@ -130,33 +132,33 @@ ORDER BY n.LIMITE_VENTA DESC"));//db.SORTEOS.Where(s => s.PK1 == clave).FirstOrD
             }
 
             // Si encontramos un sorteo válido, obtenemos su listado de ganadores
-            if (sorteo != null)
-            {
-                List<Ganador> ganadores = new List<Ganador>();
+//            if (sorteo != null)
+//            {
+//                List<Ganador> ganadores = new List<Ganador>();
 
-                /* Traemos a los ganadores */
-                ResultSet dbGanadores = db.getTable(String.Format(@"
-SELECT boletos.FOLIO, premios.NUM_PREMIO
-FROM GANADORES gana
-INNER JOIN PREMIOS
-ON gana.PK_PREMIO = PREMIOS.PK1
-INNER JOIN COMPRADORES compra
-ON compra.PK1 = gana.PK_COMPRADOR
-INNER JOIN BOLETOS
-ON boletos.PK1 = compra.PK_BOLETO
-WHERE gana.PK_SORTEO = {0}
-AND premios.CLAVE_BENEFICIARIO = 1
-ORDER BY PREMIOS.CLASIFICACION, PREMIOS.NUM_PREMIO", sorteo.clave));
-                while (dbGanadores.Next())
-                {
-                    ganadores.Add(new Ganador()
-                    {
-                        folio = dbGanadores.Get("FOLIO"),
-                        lugar = dbGanadores.GetInt("NUM_PREMIO")
-                    });
-                };
-                sorteo.ganadores = ganadores.ToArray();
-            }
+//                /* Traemos a los ganadores */
+//                ResultSet dbGanadores = db.getTable(String.Format(@"
+//SELECT boletos.FOLIO, premios.NUM_PREMIO
+//FROM GANADORES gana
+//INNER JOIN PREMIOS
+//ON gana.PK_PREMIO = PREMIOS.PK1
+//INNER JOIN COMPRADORES compra
+//ON compra.PK1 = gana.PK_COMPRADOR
+//INNER JOIN BOLETOS
+//ON boletos.PK1 = compra.PK_BOLETO
+//WHERE gana.PK_SORTEO = {0}
+//AND premios.CLAVE_BENEFICIARIO = 1
+//ORDER BY PREMIOS.CLASIFICACION, PREMIOS.NUM_PREMIO", sorteo.clave));
+//                while (dbGanadores.Next())
+//                {
+//                    ganadores.Add(new Ganador()
+//                    {
+//                        folio = dbGanadores.Get("FOLIO"),
+//                        lugar = dbGanadores.GetInt("NUM_PREMIO")
+//                    });
+//                };
+//                sorteo.ganadores = ganadores.ToArray();
+//            }
 
             db.Close();
 
