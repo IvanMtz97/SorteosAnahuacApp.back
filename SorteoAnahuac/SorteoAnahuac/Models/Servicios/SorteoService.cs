@@ -24,7 +24,7 @@ namespace SorteoAnahuac.Models
 
             /* Buscamos el sorteo */
             ResultSet dbSorteo = db.getTable(String.Format(@"
-SELECT TOP 1 sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA_DEPOSITO, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
+SELECT TOP 1 sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA_DEPOSITO, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, sorteo.URL_5, sorteo.URL_6, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
 FROM SORTEOS sorteo
 LEFT JOIN NICHOS n
 ON n.PK_SORTEO = sorteo.PK1
@@ -43,10 +43,12 @@ ORDER BY n.LIMITE_VENTA DESC", clave));//db.SORTEOS.Where(s => s.PK1 == clave).F
                     cuenta_bancaria = dbSorteo.Get("CUENTA_DEPOSITO"),
                     fecha_inico = dbSorteo.GetDateTime("FECHA_I"),
                     fecha_fin = dbSorteo.GetDateTime("FECHA_T"),
-                    url_conoce = dbSorteo.Get("URL_1"),
-                    url_tips = dbSorteo.Get("URL_2"),
-                    url_aviso = dbSorteo.Get("URL_3"),
-                    url_terminos = dbSorteo.Get("URL_4")
+                    url_politicas = dbSorteo.Get("URL_1"),
+                    url_condiciones = dbSorteo.Get("URL_2"),
+                    url_reglamento = dbSorteo.Get("URL_3"),
+                    url_aceptacion = dbSorteo.Get("URL_4"),
+                    url_conoce = dbSorteo.Get("URL_5"),
+                    url_lista_ganadores = dbSorteo.Get("URL_6")
                 };
 
                 sorteo.limite_venta = dbSorteo.GetDateTime("LIMITE_VENTA");
@@ -100,7 +102,7 @@ ORDER BY PREMIOS.CLASIFICACION, PREMIOS.NUM_PREMIO", clave));
 
             /* Buscamos el sorteo */
             ResultSet dbSorteo = db.getTable(String.Format(@"
-SELECT TOP 1 sorteo.PK1, sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
+SELECT TOP 1 sorteo.PK1, sorteo.CLAVE, sorteo.SORTEO, sorteo.DESCRIPCION, sorteo.CUENTA, sorteo.FECHA_I, sorteo.FECHA_T, sorteo.URL_1, sorteo.URL_2, sorteo.URL_3, sorteo.URL_4, sorteo.URL_5, sorteo.URL_6, n.LIMITE_VENTA, n.LIMITE_DEPOSITO
 FROM SORTEOS sorteo
 LEFT JOIN SECTORES sc
 ON sc.PK_SORTEO = sorteo.PK1
@@ -121,10 +123,12 @@ ORDER BY n.LIMITE_VENTA DESC"));//db.SORTEOS.Where(s => s.PK1 == clave).FirstOrD
                     cuenta_bancaria = dbSorteo.Get("CUENTA"),
                     fecha_inico = dbSorteo.GetDateTime("FECHA_I"),
                     fecha_fin = dbSorteo.GetDateTime("FECHA_T"),
-                    url_conoce = dbSorteo.Get("URL_1"),
-                    url_tips = dbSorteo.Get("URL_2"),
-                    url_aviso = dbSorteo.Get("URL_3"),
-                    url_terminos = dbSorteo.Get("URL_4")
+                    url_politicas = dbSorteo.Get("URL_1"),
+                    url_condiciones = dbSorteo.Get("URL_2"),
+                    url_reglamento = dbSorteo.Get("URL_3"),
+                    url_aceptacion = dbSorteo.Get("URL_4"),
+                    url_conoce = dbSorteo.Get("URL_5"),
+                    url_lista_ganadores = dbSorteo.Get("URL_6")
                 };
 
                 sorteo.limite_venta = dbSorteo.GetDateTime("LIMITE_VENTA");

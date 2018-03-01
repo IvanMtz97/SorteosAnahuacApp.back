@@ -195,20 +195,24 @@ AND PK_TALONARIO IN (SELECT PK1 FROM TALONARIOS WHERE FOLIO = {1} AND DIGITAL = 
             ResultSet dbBoleto = db.getTable(string.Format(@"
 SELECT TOP 1 bol.PK1,
 bol.PK_TALONARIO,
-bol.TALONARIO,
+tal.FOLIO,
 bol.FOLIO,
 ISNULL(bol.FOLIODIGITAL,-1) digital,
 ISNULL(com.PK1,-1) comprador
 FROM BOLETOS bol
-LEFT JOIN COMPRADORES com
+LEFT JOIN COMPRADORES_BOLETOS com
 ON com.PK_BOLETO = bol.PK1
+INNER JOIN TALONARIOS tal
+ON tal.PK1 = bol.PK_TALONARIO
 WHERE bol.FOLIO = '{0}'
 AND EXISTS (
 	SELECT 'X'
-	FROM SORTEOS_COLABORADORES_BOLETOS scb
-	INNER JOIN SORTEOS
-	ON scb.PK_SORTEO = SORTEOS.PK1
-	WHERE SORTEOS.ACTIVO = 1
+	FROM COLABORADORES_BOLETOS scb,
+	SORTEOS sorteo
+	INNER JOIN SECTORES sc
+	ON sc.PK_SORTEO = sorteo.PK1
+	WHERE sorteo.ACTIVO = 1
+	AND scb.PK_SECTOR = sc.PK1
 	AND scb.PK_COLABORADOR = {1}
 	AND scb.PK_BOLETO = bol.PK1
 )", boleto.folio, clave_persona));
@@ -219,7 +223,7 @@ AND EXISTS (
                 boletoExiste = true;
                 clave_boleto = dbBoleto.GetLong("PK1");
                 clave_talonario = dbBoleto.Get("PK_TALONARIO");
-                folio_talonario = dbBoleto.Get("TALONARIO");
+                folio_talonario = dbBoleto.Get("FOLIO");
                 folio_boleto = dbBoleto.Get("FOLIO");
                 esDigital = dbBoleto.Get("digital") != "-1";
                 tieneComprador = dbBoleto.Get("comprador") != "-1";
@@ -231,10 +235,11 @@ AND EXISTS (
                 if (!esDigital)
                 {
 
-                    /* Actualizamos el folio digital del boleto para marcarlo como vendido*/
+                    /* Actualizamos el folio digital y el estado del boleto para marcarlo como pendiente de pago*/
                     db.execute(string.Format(@"
 UPDATE boletos
-SET FOLIODIGITAL = (SELECT COUNT('x') + 1 FROM boletos WHERE NOT foliodigital IS NULL)
+SET FOLIODIGITAL = (SELECT COUNT('x') + 1 FROM boletos WHERE NOT foliodigital IS NULL),
+PK_ESTADO = 'P'
 WHERE PK1 = {0}", clave_boleto));
 
                     /* Si el boleto no tiene comprador, le agregamos los datos del comprador actual */
@@ -252,9 +257,11 @@ WHERE PK1 = {0}", clave_boleto));
                         string clave_nicho = "NULL", clave_sector = "NULL";
                         ResultSet dbColaborador = db.getTable(string.Format(@"
 SELECT TOP 1 ISNULL(CAST(PK_NICHO as NVARCHAR(14)),'NULL') as PK_NICHO, ISNULL(CAST(PK_SECTOR as NVARCHAR(14)),'NULL') as PK_SECTOR
-FROM SORTEOS_ASIGNACION_COLABORADORES
+FROM COLABORADORES_ASIGNACION,
+SECTORES SE
 WHERE PK_COLABORADOR = {0}
-AND PK_SORTEO = {1}", clave_persona, clave_sorteo));
+AND SE.PK1 = COLABORADORES_ASIGNACION.PK_SECTOR
+AND SE.PK_SORTEO = {1}", clave_persona, clave_sorteo));
                         if (dbColaborador.Next())
                         {
                             clave_nicho = dbColaborador.Get("PK_NICHO");
@@ -262,18 +269,24 @@ AND PK_SORTEO = {1}", clave_persona, clave_sorteo));
                         }
 
                         /* Insertamos al comprador */
-                        db.execute(string.Format(@"
+                        string clave_comprador = "NULL";
+                        clave_comprador = db.executeId(string.Format(@"
 INSERT INTO [COMPRADORES]
-           ([PK_SORTEO],[PK_TALONARIO],[TALONARIO],[PK_BOLETO],[BOLETO]
-           ,[PK_SECTOR],[PK_NICHO],[PK_COLABORADOR],[NOMBRE],[APELLIDOS],[TELEFONOF]
-           ,[TELEFONOM],[CORREO],[CALLE],[NUMERO],[COLONIA],[ESTADO],[MUNDEL]
+           ([NOMBRE],[APELLIDOS],[TELEFONO_F]
+           ,[TELEFONO_M],[CORREO],[CALLE],[NUMERO],[COLONIA],[ESTADO],[MUNDEL]
            ,[USUARIO],[FECHA_R],[CP])
      VALUES
-           ({0},{1},'{2}',{3},'{4}',{5},{6},{7},'{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}',GETDATE(),'{19}')",
-           clave_sorteo, clave_talonario, folio_talonario, clave_boleto, folio_boleto, clave_sector, clave_nicho, clave_persona,
+           ({0},{1},'{2}',{3},'{4}',{5},{6},{7},'{8}','{9}','{10}',GETDATE(),'{11}')",
            boleto.comprador.nombre, boleto.comprador.apellidos, boleto.comprador.direccion.telefono, boleto.comprador.celular,
            boleto.comprador.correo, boleto.comprador.direccion.calle, boleto.comprador.direccion.numero, boleto.comprador.direccion.colonia,
            boleto.comprador.direccion.estado, boleto.comprador.direccion.municipio, clave_persona.ToString(), boleto.comprador.direccion.codigo_postal));
+
+                        db.execute(string.Format(@"
+INSERT INTO [COMPRADORES_BOLETOS]
+           ([PK_COMPRADOR],[PK_BOLETO],[FECHA_R])
+     VALUES
+           ({0},{1},GETDATE())",
+           clave_comprador, clave_boleto));
 
                     }
                     boleto.clave = clave_boleto;

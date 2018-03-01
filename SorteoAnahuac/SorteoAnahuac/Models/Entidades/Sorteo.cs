@@ -63,17 +63,27 @@ namespace SorteoAnahuac.Models
         /// <summary>
         /// URL con información de tips de venta
         /// </summary>
-        public string url_tips { get; set; }
+        public string url_condiciones{ get; set; }
 
         /// <summary>
         /// URL con información de conoce tu sorteo
         /// </summary>
-        public string url_aviso { get; set; }
+        public string url_reglamento { get; set; }
 
         /// <summary>
         /// URL con información de tips de venta
         /// </summary>
-        public string url_terminos { get; set; }
+        public string url_aceptacion { get; set; }
+
+        /// <summary>
+        /// URL con información de Listado de ganadores
+        /// </summary>
+        public string url_lista_ganadores { get; set; }
+
+        /// <summary>
+        /// URL con información de Listado de ganadores
+        /// </summary>
+        public string url_politicas { get; set; }
 
         /// <summary>
         /// Listado de boletos ganadores del sorteo
