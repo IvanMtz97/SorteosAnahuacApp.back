@@ -208,6 +208,7 @@
     <Compile Include="Code\TokenUtil.cs" />
     <Compile Include="Controllers\BoletoController.cs" />
     <Compile Include="Controllers\ColaboradorController.cs" />
+    <Compile Include="Controllers\CompradorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NotificacionesController.cs" />
     <Compile Include="Controllers\ServerController.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Models\Entidades\Municipio.cs" />
     <Compile Include="Models\Entidades\Sorteo.cs" />
     <Compile Include="Models\Entidades\Talonario.cs" />
+    <Compile Include="Models\Servicios\CompradorService.cs" />
     <Compile Include="Models\Servicios\NotificacionesService.cs" />
     <Compile Include="Models\Servicios\UsuarioService.cs" />
     <Compile Include="Models\Servicios\ColaboradorService.cs" />

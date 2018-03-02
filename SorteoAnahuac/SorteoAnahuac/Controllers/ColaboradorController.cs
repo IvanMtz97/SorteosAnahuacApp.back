@@ -37,18 +37,20 @@ namespace SorteoAnahuac.Controllers
         /// <summary>
         /// Obtiene los datos de un colaborador por su cuenta de correo.
         /// </summary>
-        /// <param name="id">Cuenta de correo del colaborador</param>
+        /// <param name="correo">Cuenta de correo del colaborador</param>
         /// <returns>Estructura de datos con la información básica del colaborador solicitado</returns>
         [Code.TokenAuthorize]
+        [Route("api/Colaborador/{correo}")]
         // GET api/<controller>/5
-        public Models.Colaborador Get(string id)
+        public Models.Colaborador Get(string correo)
         {
-            if (!User.IsInRole("Administrador"))
+            if (!(User.Identity.Name == correo))
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden);
             }
 
-            return Models.ColaboradorService.Obtiene(id);
+            return Models.ColaboradorService.ObtieneConTalonarios(correo);
+            //return Models.ColaboradorService.Obtiene(correo);
         }
 
         /// <summary>

@@ -287,6 +287,46 @@ AND boletos.PK_TALONARIO = {1}", persona.clave, talonario.clave, sorteo_colab));
                         if (boleto.estado_boleto == "V") vendidos.Add(boleto);
                         if (boleto.estado_boleto == "P") asignados.Add(boleto);
                         if (boleto.estado_boleto == "NULL" || boleto.estado_boleto == String.Empty) pendientes.Add(boleto);
+
+                        /* Buscamos el boleto por su clave */
+                        ResultSet dbBoletoComprador = db.getTable(String.Format(@"
+SELECT TOP 1 bol.PK1, bol.FOLIO, CAST(bol.FOLIODIGITAL as NVARCHAR(16)) FOLIODIGITAL, tal.FOLIO AS TAL_FOLIO, scb.PK_COLABORADOR, tal.PK_SORTEO, ISNULL(comp.PK1,-1) tiene_comprador, com.NOMBRE, com.APELLIDOS, com.TELEFONO_M, com.CORREO, com.CALLE, com.NUMERO, com.COLONIA, com.ESTADO, com.MUNDEL, com.TELEFONO_F
+FROM boletos bol
+INNER JOIN TALONARIOS tal
+ON tal.PK1 = bol.PK_TALONARIO
+LEFT JOIN COLABORADORES_BOLETOS scb
+ON scb.PK_BOLETO = bol.PK1
+LEFT JOIN COMPRADORES_BOLETOS comp
+ON comp.PK_BOLETO = bol.PK1
+LEFT JOIN COMPRADORES com 
+ON com.PK1 = comp.PK_COMPRADOR
+WHERE bol.PK1 = {0}", boleto.clave));
+
+                        /* Si el boleto existe, procedemos a extraer sus datos */
+                        if (dbBoletoComprador.Next())
+                        {
+                            /* Revisamos si tiene un comprador */
+                            if (dbBoletoComprador.GetInt("tiene_comprador") > -1)
+                            {
+                                /* Si tiene comprador agregamos los datos al objeto de salida */
+                                boleto.comprador = new Comprador()
+                                {
+                                    nombre = dbBoletoComprador.Get("NOMBRE"),
+                                    apellidos = dbBoletoComprador.Get("APELLIDOS"),
+                                    celular = dbBoletoComprador.Get("TELEFONO_M"),
+                                    correo = dbBoletoComprador.Get("CORREO"),
+                                    direccion = new Direccion()
+                                    {
+                                        calle = dbBoletoComprador.Get("CALLE"),
+                                        numero = dbBoletoComprador.Get("NUMERO"),
+                                        colonia = dbBoletoComprador.Get("COLONIA"),
+                                        estado = dbBoletoComprador.Get("ESTADO"),
+                                        municipio = dbBoletoComprador.Get("MUNDEL"),
+                                        telefono = dbBoletoComprador.Get("TELEFONO_F")
+                                    }
+                                };
+                            }
+                        }
                     }
                     //talonario.boletos = pendientes.ToArray();
 
@@ -320,11 +360,16 @@ AND boletos.PK_TALONARIO = {1}", persona.clave, talonario.clave, sorteo_colab));
 
             /* Buscamos al colaborador para revisar que este registrado como un colaborador en el sorteo activo actual */
             ResultSet dbPersona = db.getTable(String.Format(@"
-SELECT TOP 1 colab.CLAVE, colab.NOMBRE, colab.APATERNO, colab.AMATERNO, correos.CORREO, colab.REFBANCARIA, colab.PK_SORTEO
-FROM COLABORADORES as colab INNER JOIN COLABORADORES_CORREOS as correos
-ON colab.PK1 = correos.PK_COLABORADOR
-WHERE colab.PK1 = {0}
-AND correos.CORREO LIKE '%@anahuac.mx'", clave));
+SELECT top 1 C.CLAVE, C.NOMBRE, C.APATERNO, C.AMATERNO, c.CORREO_P, S.CUENTA, SE.PK_SORTEO
+FROM COLABORADORES_ASIGNACION CA, 
+SECTORES SE, 
+SORTEOS S,
+COLABORADORES C
+WHERE CA.PK_SECTOR=SE.PK1 
+AND SE.PK_SORTEO=S.PK1 
+AND S.ACTIVO = 1
+AND CA.PK_COLABORADOR = {0}
+AND C.CORREO_P LIKE '%@anahuac.mx'", clave));
 
             long sorteo_colab = -1;
 
@@ -338,8 +383,8 @@ AND correos.CORREO LIKE '%@anahuac.mx'", clave));
                     nombre = dbPersona.Get("NOMBRE"),
                     apellido_paterno = dbPersona.Get("APATERNO"),
                     apellido_materno = dbPersona.Get("AMATERNO"),
-                    correo = dbPersona.Get("CORREO").ToLower(),
-                    referencia_bancaria = dbPersona.Get("REFBANCARIA")
+                    correo = dbPersona.Get("CORREO_P").ToLower(),
+                    referencia_bancaria = dbPersona.Get("CUENTA")
                 };
                 sorteo_colab = dbPersona.GetLong("PK_SORTEO");
             }

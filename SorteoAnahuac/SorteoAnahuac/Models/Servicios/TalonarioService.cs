@@ -192,11 +192,11 @@ AND PK_TALONARIO IN (SELECT PK1 FROM TALONARIOS WHERE FOLIO = {1} AND DIGITAL = 
             database db = new database();
 
             /* Buscamos el boleto por su folio, validando que el boleto pertenezca al colaborador que solicita la venta y que no tenga folio digital */
-            ResultSet dbBoleto = db.getTable(string.Format(@"
+            ResultSet dbBoleto = db.getTable(String.Format(@"
 SELECT TOP 1 bol.PK1,
 bol.PK_TALONARIO,
-tal.FOLIO,
-bol.FOLIO,
+tal.FOLIO as FolioTalon,
+bol.FOLIO as FolioBoleto,
 ISNULL(bol.FOLIODIGITAL,-1) digital,
 ISNULL(com.PK1,-1) comprador
 FROM BOLETOS bol
@@ -223,8 +223,8 @@ AND EXISTS (
                 boletoExiste = true;
                 clave_boleto = dbBoleto.GetLong("PK1");
                 clave_talonario = dbBoleto.Get("PK_TALONARIO");
-                folio_talonario = dbBoleto.Get("FOLIO");
-                folio_boleto = dbBoleto.Get("FOLIO");
+                folio_talonario = dbBoleto.Get("FolioTalon");
+                folio_boleto = dbBoleto.Get("FolioBoleto");
                 esDigital = dbBoleto.Get("digital") != "-1";
                 tieneComprador = dbBoleto.Get("comprador") != "-1";
             }
@@ -270,18 +270,18 @@ AND SE.PK_SORTEO = {1}", clave_persona, clave_sorteo));
 
                         /* Insertamos al comprador */
                         string clave_comprador = "NULL";
-                        clave_comprador = db.executeId(string.Format(@"
+                        clave_comprador = db.executeId(String.Format(@"
 INSERT INTO [COMPRADORES]
            ([NOMBRE],[APELLIDOS],[TELEFONO_F]
            ,[TELEFONO_M],[CORREO],[CALLE],[NUMERO],[COLONIA],[ESTADO],[MUNDEL]
            ,[USUARIO],[FECHA_R],[CP])
      VALUES
-           ({0},{1},'{2}',{3},'{4}',{5},{6},{7},'{8}','{9}','{10}',GETDATE(),'{11}')",
+           ('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}','{8}','{9}','{10}',GETDATE(),'{11}')",
            boleto.comprador.nombre, boleto.comprador.apellidos, boleto.comprador.direccion.telefono, boleto.comprador.celular,
            boleto.comprador.correo, boleto.comprador.direccion.calle, boleto.comprador.direccion.numero, boleto.comprador.direccion.colonia,
            boleto.comprador.direccion.estado, boleto.comprador.direccion.municipio, clave_persona.ToString(), boleto.comprador.direccion.codigo_postal));
 
-                        db.execute(string.Format(@"
+                        db.execute(String.Format(@"
 INSERT INTO [COMPRADORES_BOLETOS]
            ([PK_COMPRADOR],[PK_BOLETO],[FECHA_R])
      VALUES
@@ -329,14 +329,16 @@ INSERT INTO [COMPRADORES_BOLETOS]
 
             /* Buscamos el boleto por su clave */
             ResultSet dbBoleto = db.getTable(String.Format(@"
-SELECT TOP 1 bol.PK1, bol.FOLIO, CAST(bol.FOLIODIGITAL as NVARCHAR(16)) FOLIODIGITAL, tal.FOLIO AS TAL_FOLIO, scb.PK_COLABORADOR, scb.PK_SORTEO, ISNULL(comp.PK1,-1) tiene_comprador, comp.NOMBRE, comp.APELLIDOS, comp.TELEFONOM, comp.CORREO, comp.CALLE, comp.NUMERO, comp.COLONIA, comp.ESTADO, comp.MUNDEL, comp.TELEFONOF
+SELECT TOP 1 bol.PK1, bol.FOLIO, CAST(bol.FOLIODIGITAL as NVARCHAR(16)) FOLIODIGITAL, tal.FOLIO AS TAL_FOLIO, scb.PK_COLABORADOR, tal.PK_SORTEO, ISNULL(comp.PK1,-1) tiene_comprador, com.NOMBRE, com.APELLIDOS, com.TELEFONO_M, com.CORREO, com.CALLE, com.NUMERO, com.COLONIA, com.ESTADO, com.MUNDEL, com.TELEFONO_F
 FROM boletos bol
 INNER JOIN TALONARIOS tal
 ON tal.PK1 = bol.PK_TALONARIO
-LEFT JOIN SORTEOS_COLABORADORES_BOLETOS scb
+LEFT JOIN COLABORADORES_BOLETOS scb
 ON scb.PK_BOLETO = bol.PK1
-LEFT JOIN COMPRADORES comp
+LEFT JOIN COMPRADORES_BOLETOS comp
 ON comp.PK_BOLETO = bol.PK1
+LEFT JOIN COMPRADORES com 
+ON com.PK1 = comp.PK_COMPRADOR
 WHERE bol.PK1 = {0}", clave));
 
             /* Si el boleto existe, procedemos a extraer sus datos */
@@ -368,7 +370,7 @@ WHERE bol.PK1 = {0}", clave));
                     {
                         nombre = dbBoleto.Get("NOMBRE"),
                         apellidos = dbBoleto.Get("APELLIDOS"),
-                        celular = dbBoleto.Get("TELEFONOM"),
+                        celular = dbBoleto.Get("TELEFONO_M"),
                         correo = dbBoleto.Get("CORREO"),
                         direccion = new Direccion()
                         {
@@ -377,7 +379,7 @@ WHERE bol.PK1 = {0}", clave));
                             colonia = dbBoleto.Get("COLONIA"),
                             estado = dbBoleto.Get("ESTADO"),
                             municipio = dbBoleto.Get("MUNDEL"),
-                            telefono = dbBoleto.Get("TELEFONOF")
+                            telefono = dbBoleto.Get("TELEFONO_F")
                         }
                     };
                 }

@@ -45,5 +45,6 @@ namespace SorteoAnahuac.Models
         /// Dirección del comprador
         /// </summary>
         public Direccion direccion { get; set; }
+
     }
 }
