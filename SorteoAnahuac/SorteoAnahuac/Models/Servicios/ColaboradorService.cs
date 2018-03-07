@@ -84,6 +84,37 @@ GETDATE())", clave, ip_address));
         }
 
         /// <summary>
+        /// Función que valida credeciales de office365
+        /// </summary>
+        /// <param name="correo">Correo del usuario que desea autenticarse</param>
+        /// <param name="password">Contraseña del usuario a autenticar</param>
+        /// <returns>Verdadero cuando el usuario y contraseña con correctos</returns>
+        public static bool CambioCredecialesOffice(string correo, string password)
+        {
+            /* Verificamos si la persona existe en la base de datos como colaborador */
+            long clave = -1;
+            if (correo.ToLowerInvariant().EndsWith("@anahuac.mx"))
+            {
+
+                System.Net.ServicePointManager.DefaultConnectionLimit = 5000;
+                System.Net.WebClient cliente = new System.Net.WebClient();
+                cliente.Credentials = new System.Net.NetworkCredential(correo, password);
+                try
+                {
+                    string usuario = cliente.DownloadString("https://outlook.office365.com/api/v1.0/me/");
+                    clave = 1;
+                }
+                catch
+                {
+                    clave = -1;
+                }
+            }
+
+            return (clave > -1);
+
+        }
+
+        /// <summary>
         /// Función que revisa que el correo sea el de un colaborador válido, y trae sus datos.
         /// </summary>
         /// <param name="correo">Cuenta de correo a validar</param>

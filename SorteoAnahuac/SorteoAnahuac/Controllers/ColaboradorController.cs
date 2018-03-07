@@ -17,8 +17,9 @@ namespace SorteoAnahuac.Controllers
         /// </summary>
         /// <returns>Estructura de datos con la información básica del colaborador autenticado.</returns>
         [Code.BasicAuthorize]
+        [Route("api/Colaborador/{uuid}")]
         // GET api/<controller>
-        public Models.Colaborador Get()
+        public Models.Colaborador Get(string uuid)
         {
             string correo = User.Identity.Name;
 
@@ -27,7 +28,7 @@ namespace SorteoAnahuac.Controllers
             
 
             //Generamos un token para este usuario
-            string token = Models.SessionService.GeneraToken(correo);
+            string token = Models.SessionService.GeneraToken(correo, uuid);
             usuario.token = token;
             usuario.expira = DateTime.UtcNow.AddMinutes(int.Parse(ConfigurationManager.AppSettings["Seguridad.Expiracion"]));
             
@@ -40,9 +41,9 @@ namespace SorteoAnahuac.Controllers
         /// <param name="correo">Cuenta de correo del colaborador</param>
         /// <returns>Estructura de datos con la información básica del colaborador solicitado</returns>
         [Code.TokenAuthorize]
-        [Route("api/Colaborador/{correo}")]
+        [Route("api/Colaborador/GetCorreo/{correo}")]
         // GET api/<controller>/5
-        public Models.Colaborador Get(string correo)
+        public Models.Colaborador GetCorreo(string correo)
         {
             if (!(User.Identity.Name == correo))
             {
@@ -54,11 +55,26 @@ namespace SorteoAnahuac.Controllers
         }
 
         /// <summary>
+        /// Obtiene los datos de un colaborador por su cuenta de correo.
+        /// </summary>
+        /// <param name="clave">Clave de correo del colaborador</param>
+        /// <param name="correo">Cuenta de correo del colaborador</param>
+        /// <returns>Estructura de retorno valor true o false para cuenta office365/returns>
+        [Code.TokenAuthorize]
+        [Route("api/Colaborador/GetAuthOffice/{clave}/{correo}")]
+        // GET api/<controller>/GetAuthOffice/5/prueba@prueba.com
+        public bool GetAuthOffice(string clave, string correo)
+        {
+            return Models.ColaboradorService.CambioCredecialesOffice(correo, clave);
+        }
+
+        /// <summary>
         /// Acción que permite renovar el token de sesión de un usuario.
         /// </summary>
         /// <returns>Estructura de datos con la información básica del colaborador autenticado.</returns>
         [Code.TokenAuthorize]
-        public Models.Colaborador Put()
+        [Route("api/Colaborador/{uuid}")]
+        public Models.Colaborador Put(string uuid)
         {
             string correo = User.Identity.Name;
 
@@ -66,7 +82,7 @@ namespace SorteoAnahuac.Controllers
             Models.Colaborador usuario = Models.ColaboradorService.Obtiene(correo);
 
             //Generamos un token para este usuario
-            string token = Models.SessionService.GeneraToken(correo);
+            string token = Models.SessionService.GeneraToken(correo, uuid);
             usuario.token = token;
             usuario.expira = DateTime.UtcNow.AddMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["Seguridad.Expiracion"]));
 

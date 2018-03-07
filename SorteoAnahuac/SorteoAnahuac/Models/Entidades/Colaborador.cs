@@ -46,5 +46,7 @@ namespace SorteoAnahuac.Models
             this._calculaNombre = false;
             this._nombreCompleto = nombre;
         }
+
+        public string modelo_telefono { get; set; }
     }
 }

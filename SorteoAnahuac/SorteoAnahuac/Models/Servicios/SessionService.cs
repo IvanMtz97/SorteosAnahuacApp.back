@@ -12,8 +12,9 @@ namespace SorteoAnahuac.Models
         /// Función que genera un token para un usuario
         /// </summary>
         /// <param name="usuario">Usuario para el cual se quiere generar un token</param>
+        /// <param name="uuid">UUID para el cual se quiere generar un token</param>
         /// <returns>Token con los datos de sesión del usuario</returns>
-        public static string GeneraToken(string usuario)
+        public static string GeneraToken(string usuario, string uuid)
         {
             string jsonSesion = string.Empty;
             using (StringWriter output = new StringWriter())
@@ -22,6 +23,7 @@ namespace SorteoAnahuac.Models
                    new Colaborador()
                    {
                        correo = usuario,
+                       modelo_telefono = uuid,
                        expira = DateTime.Now.AddMinutes(int.Parse(ConfigurationManager.AppSettings["Seguridad.Expiracion"]) + 10)
                    },
                     output
@@ -48,7 +50,8 @@ namespace SorteoAnahuac.Models
                 objSesion = new Colaborador()
                 {
                     expira = tempObject.expira,
-                    correo = tempObject.correo
+                    correo = tempObject.correo,
+                    modelo_telefono = tempObject.modelo_telefono
                 };
             }
             catch

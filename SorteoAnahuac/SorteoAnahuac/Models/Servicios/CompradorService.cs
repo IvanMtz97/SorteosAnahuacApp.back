@@ -26,13 +26,15 @@ namespace SorteoAnahuac.Models
             List<Comprador> compradores = new List<Comprador>(5);
 
             /* Buscamos al colaborador para revisar que este registrado como un colaborador en el sorteo activo actual */
-            ResultSet dbComprador = db.getTable(String.Format(@"
-select c.NOMBRE, c.APELLIDOS, c.TELEFONO_F, c.TELEFONO_M, c.CORREO, c.CALLE, c.NUMERO, c.COLONIA, c.ESTADO, c.MUNDEL, c.CP
-from COMPRADORES c
-inner join COMPRADORES_BOLETOS cmb on c.PK1 = cmb.PK_COMPRADOR
-inner join COLABORADORES_BOLETOS clb on clb.PK_BOLETO = cmb.PK_BOLETO
-where clb.PK_COLABORADOR = {0}
-and (c.nombre like '%'+ '{1}' +'%' OR  c.APELLIDOS like '%'+ '{1}' +'%')", id, texto));
+            //            ResultSet dbComprador = db.getTable(String.Format(@"
+            //select c.NOMBRE, c.APELLIDOS, c.TELEFONO_F, c.TELEFONO_M, c.CORREO, c.CALLE, c.NUMERO, c.COLONIA, c.ESTADO, c.MUNDEL, c.CP
+            //from COMPRADORES c
+            //inner join COMPRADORES_BOLETOS cmb on c.PK1 = cmb.PK_COMPRADOR
+            //inner join COLABORADORES_BOLETOS clb on clb.PK_BOLETO = cmb.PK_BOLETO
+            //where clb.PK_COLABORADOR = {0}
+            //and (c.nombre like '%'+ '{1}' +'%' OR  c.APELLIDOS like '%'+ '{1}' +'%')", id, texto));
+
+            ResultSet dbComprador = db.getTable(String.Format(@"SELECT * FROM COMPRADORES WHERE USUARIO = '{0}' AND NOMBRE LIKE '%{1}%' OR APELLIDOS LIKE '%{1}%';", id, texto));
 
             /* Por cada talonario, agregamos el folio a la lista*/
             while (dbComprador.Next())
